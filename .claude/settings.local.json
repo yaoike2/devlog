@@ -6,7 +6,13 @@
       "Bash(npm install:*)",
       "Bash(printf \"y\\\\n\")",
       "Bash(cp:*)",
-      "Bash(pnpm install:*)"
+      "Bash(pnpm install:*)",
+      "Skill(commit-commands:commit)",
+      "Bash(mvn test:*)",
+      "Bash(mvn compile:*)",
+      "Bash(mvn dependency:tree -Dscope=test)",
+      "Bash(jar tf:*)",
+      "Bash(grep -v \"/$\")"
     ]
   }
 }
