@@ -2,7 +2,7 @@
 
 ## 功能点 Checklist
 
-- [x] 1. 创建日志条目（日期、内容、标签）— 后端完成（Entity/Repository/Service/Controller）
+- [x] 1. 创建日志条目（日期、内容、标签）— 前后端均完成（Entity/Repository/Service/Controller + App.vue 表单）
 - [ ] 2. 日志列表展示（按日期倒序，分页）
 - [ ] 3. 按日期范围筛选
 - [ ] 4. 按标签筛选
