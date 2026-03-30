@@ -6,6 +6,9 @@ import com.qianlispace.backend.entity.LogEntry;
 import com.qianlispace.backend.repository.LogEntryRepository;
 import com.qianlispace.backend.service.LogEntryService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,5 +34,11 @@ public class LogEntryServiceImpl implements LogEntryService {
         LogEntry entry = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("日志条目不存在，id=" + id));
         return LogEntryResponse.from(entry);
+    }
+
+    @Override
+    public Page<LogEntryResponse> list(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return repository.findAll(pageRequest).map(LogEntryResponse::from);
     }
 }

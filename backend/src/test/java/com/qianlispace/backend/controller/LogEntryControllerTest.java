@@ -7,15 +7,20 @@ import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,6 +38,53 @@ class LogEntryControllerTest {
 
     @MockitoBean
     private LogEntryService logEntryService;
+
+    // --- GET /logs (list) ---
+
+    @Test
+    void list_defaultParams_returnsPagedResult() throws Exception {
+        List<LogEntryResponse> items = List.of(
+                buildResponse(2L, "第二条", "tag2"),
+                buildResponse(1L, "第一条", "tag1")
+        );
+        Page<LogEntryResponse> page = new PageImpl<>(items, org.springframework.data.domain.PageRequest.of(0, 10), 2);
+        when(logEntryService.list(eq(0), eq(10))).thenReturn(page);
+
+        mockMvc.perform(get("/logs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data.content.length()").value(2))
+                .andExpect(jsonPath("$.data.totalElements").value(2))
+                .andExpect(jsonPath("$.data.totalPages").value(1))
+                .andExpect(jsonPath("$.data.number").value(0));
+
+        verify(logEntryService).list(0, 10);
+    }
+
+    @Test
+    void list_customParams_usesProvidedValues() throws Exception {
+        Page<LogEntryResponse> page = new PageImpl<>(Collections.emptyList(), org.springframework.data.domain.PageRequest.of(1, 5), 0);
+        when(logEntryService.list(eq(1), eq(5))).thenReturn(page);
+
+        mockMvc.perform(get("/logs").param("page", "1").param("size", "5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
+
+        verify(logEntryService).list(1, 5);
+    }
+
+    @Test
+    void list_emptyResult_returnsEmptyPage() throws Exception {
+        Page<LogEntryResponse> page = new PageImpl<>(Collections.emptyList(), org.springframework.data.domain.PageRequest.of(0, 10), 0);
+        when(logEntryService.list(eq(0), eq(10))).thenReturn(page);
+
+        mockMvc.perform(get("/logs"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data.content.length()").value(0))
+                .andExpect(jsonPath("$.data.totalElements").value(0))
+                .andExpect(jsonPath("$.data.totalPages").value(0));
+    }
 
     // --- POST /logs ---
 

@@ -6,6 +6,7 @@ import com.qianlispace.backend.dto.LogEntryResponse;
 import com.qianlispace.backend.service.LogEntryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,13 @@ public class LogEntryController {
 
     public LogEntryController(LogEntryService service) {
         this.service = service;
+    }
+
+    @GetMapping
+    public Result<Page<LogEntryResponse>> list(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return Result.success(service.list(page, size));
     }
 
     @PostMapping

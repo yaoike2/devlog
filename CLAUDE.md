@@ -25,7 +25,7 @@
 - 所有 API 返回统一的 Result<T> 包装类
 
 ## 工作流程
-- 修改代码后先跑对应模块的测试再提交
+- 修改代码后先跑对应模块的测试再提交,记得提醒我重启前端,后端的服务,并给出命令.
 - 每次只改一个功能点，不要混合多个变更
-- 每完成一个子步骤就 git commit，commit message 写清楚做了什么，并更新 progress.md
+- 每完成一个子步骤就 /commit-commands:commit，commit message 写清楚做了什么，并更新 progress.md
 - 复杂任务中途如果有重要的设计决策，写入 progress.md
