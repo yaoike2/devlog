@@ -12,7 +12,9 @@
       "Bash(mvn compile:*)",
       "Bash(mvn dependency:tree -Dscope=test)",
       "Bash(jar tf:*)",
-      "Bash(grep -v \"/$\")"
+      "Bash(grep -v \"/$\")",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm build:*)"
     ]
   }
 }
